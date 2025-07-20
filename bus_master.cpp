@@ -1,5 +1,5 @@
 #include "bus_master.h"
-
+// Master
 void bus_master::traffic_gen_method()
 {
     cout << "Thread running" << endl;
