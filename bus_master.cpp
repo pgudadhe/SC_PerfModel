@@ -1,13 +1,15 @@
 #include "bus_master.h"
 
-void bus_master::thread_process()
+void bus_master::traffic_gen_method()
 {
+    cout << "Thread running" << endl;
+
     tlm::tlm_generic_payload *trans;
     tlm::tlm_phase phase;
     sc_time delay;
     uint64_t addr = 0;
 
-    for (unsigned int i = 0; i < m_num_transactions; i++)
+    //for (unsigned int i = 0; i < m_num_transactions; i++)
     {
         trans = new tlm::tlm_generic_payload();
 
@@ -18,7 +20,7 @@ void bus_master::thread_process()
         // trans->acquire();  Do we need this???
         trans->set_command(cmd);
         trans->set_address(addr);
-        trans->set_data_ptr(reinterpret_cast<unsigned char *>(&data[i % 16]));
+        // trans->set_data_ptr(reinterpret_cast<unsigned char *>(&m_data[i % 16]));
         trans->set_data_length(4);
         trans->set_streaming_width(4);                            // = data_length to indicate no streaming
         trans->set_byte_enable_ptr(0);                            // 0 indicates unused
@@ -26,10 +28,10 @@ void bus_master::thread_process()
         trans->set_response_status(tlm::TLM_INCOMPLETE_RESPONSE); // Mandatory initial value
 
         // Check for FIFO backpressure
-        if (m_num_trans_in_progress >= FIFO_SIZE)
-        {
-            wait(end_request_event);
-        }
+        //if (m_num_trans_in_progress >= FIFO_SIZE)
+        //{
+            //wait(end_request_event);
+        //}
 
         assert(m_num_trans_in_progress < FIFO_SIZE);
 
@@ -54,6 +56,8 @@ void bus_master::thread_process()
 
         wait(10, SC_NS); // Simulate processing delay
     }
+
+    next_trigger(1, SC_SEC);
 }
 
 tlm_sync_enum bus_master::nb_transport_bw(tlm_generic_payload &trans, tlm_phase &phase, sc_time &delay)

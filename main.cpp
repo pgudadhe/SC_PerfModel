@@ -4,10 +4,10 @@
 
 using namespace std;
 
-int sc_main(int argc, char* argv[])
+int sc_main(int argc, char *argv[])
 {
-    cout << "Hello World..." << endl;
+    cout << "Interconnect Bus Performance Model running..." << endl;
     platform_top Top("top");
-    sc_start();
+    sc_start(4, SC_SEC);
     return 0;
 }
